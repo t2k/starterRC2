@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WebApplication8.Models;
 
@@ -18,13 +14,30 @@ namespace WebApplication8.Data
         public virtual DbSet<RiskItem> RiskItem { get; set; }
         public virtual DbSet<RiskClass> RiskClass { get; set; }
         public virtual DbSet<RiskCategory> RiskCategory { get; set; }
+        public virtual DbSet<RiskReport> RiskReport { get; set; }
         public virtual DbSet<Blog> Blog { get; set; }
         public virtual DbSet<Post> Post { get; set; }
+        public virtual DbSet<RRRI> RRRI { get; set; }
 
 
-        protected override void OnModelCreating(ModelBuilder builder)
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
+            base.OnModelCreating(modelBuilder);
+
+
+            modelBuilder.Entity<RRRI>()
+                 .HasKey(t => new { t.RiskReportId, t.RiskItemId });
+
+            modelBuilder.Entity<RRRI>()
+                .HasOne(pt => pt.RiskReport)
+                .WithMany(p => p.RRRIs)
+                .HasForeignKey(pt => pt.RiskReportId);
+
+            modelBuilder.Entity<RRRI>()
+                .HasOne(pt => pt.RiskItem)
+                .WithMany(t => t.RRRIs)
+                .HasForeignKey(r=>r.RiskItemId);
 
             // temp testing relations
             /*

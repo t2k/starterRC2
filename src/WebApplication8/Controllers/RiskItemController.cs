@@ -46,8 +46,8 @@ namespace WebApplication8.Controllers
         // GET: RiskItem/Create
         public IActionResult Create()
         {
-            ViewData["RiskCategoryId"] = new SelectList(_context.RiskCategory, "Id", "RiskCategory");
-            ViewData["RiskClassId"] = new SelectList(_context.RiskClass, "Id", "RiskClass");
+            ViewData["RiskCategoryId"] = new SelectList(_context.Set<RiskCategory>(), "Id", "CategoryName");
+            ViewData["RiskClassId"] = new SelectList(_context.Set<RiskClass>(), "Id", "Classification");
             return View();
         }
 

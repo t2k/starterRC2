@@ -208,7 +208,9 @@ namespace WebApplication8.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("CategoryName");
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 128);
 
                     b.Property<int>("Ordinal");
 
@@ -224,7 +226,8 @@ namespace WebApplication8.Migrations
 
                     b.Property<string>("Classification");
 
-                    b.Property<int>("Ordinal");
+                    b.Property<int>("Ordinal")
+                        .HasAnnotation("MaxLength", 128);
 
                     b.HasKey("Id");
 
@@ -236,11 +239,15 @@ namespace WebApplication8.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 128);
 
                     b.Property<int>("RiskCategoryId");
 
                     b.Property<int>("RiskClassId");
+
+                    b.Property<int?>("RiskReportId");
 
                     b.Property<int>("Score");
 
@@ -250,7 +257,37 @@ namespace WebApplication8.Migrations
 
                     b.HasIndex("RiskClassId");
 
+                    b.HasIndex("RiskReportId");
+
                     b.ToTable("RiskItem");
+                });
+
+            modelBuilder.Entity("WebApplication8.Models.RiskReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RiskReport");
+                });
+
+            modelBuilder.Entity("WebApplication8.Models.RRRI", b =>
+                {
+                    b.Property<int>("RiskReportId");
+
+                    b.Property<int>("RiskItemId");
+
+                    b.HasKey("RiskReportId", "RiskItemId");
+
+                    b.HasIndex("RiskItemId");
+
+                    b.HasIndex("RiskReportId");
+
+                    b.ToTable("RRRI");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
@@ -307,6 +344,23 @@ namespace WebApplication8.Migrations
                     b.HasOne("WebApplication8.Models.RiskClass")
                         .WithMany()
                         .HasForeignKey("RiskClassId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WebApplication8.Models.RiskReport")
+                        .WithMany()
+                        .HasForeignKey("RiskReportId");
+                });
+
+            modelBuilder.Entity("WebApplication8.Models.RRRI", b =>
+                {
+                    b.HasOne("WebApplication8.Models.RiskItem")
+                        .WithMany()
+                        .HasForeignKey("RiskItemId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WebApplication8.Models.RiskReport")
+                        .WithMany()
+                        .HasForeignKey("RiskReportId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
         }

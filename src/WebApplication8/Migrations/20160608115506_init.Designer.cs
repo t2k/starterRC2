@@ -8,8 +8,8 @@ using WebApplication8.Data;
 namespace WebApplication8.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20160607175546_CreateIdentitySchema")]
-    partial class CreateIdentitySchema
+    [Migration("20160608115506_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -138,6 +138,8 @@ namespace WebApplication8.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
+                    b.Property<string>("FullName");
+
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
@@ -202,6 +204,93 @@ namespace WebApplication8.Migrations
                     b.ToTable("Post");
                 });
 
+            modelBuilder.Entity("WebApplication8.Models.RiskCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 128);
+
+                    b.Property<int>("Ordinal");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RiskCategory");
+                });
+
+            modelBuilder.Entity("WebApplication8.Models.RiskClass", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Classification");
+
+                    b.Property<int>("Ordinal")
+                        .HasAnnotation("MaxLength", 128);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RiskClass");
+                });
+
+            modelBuilder.Entity("WebApplication8.Models.RiskItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 128);
+
+                    b.Property<int>("RiskCategoryId");
+
+                    b.Property<int>("RiskClassId");
+
+                    b.Property<int?>("RiskReportId");
+
+                    b.Property<int>("Score");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RiskCategoryId");
+
+                    b.HasIndex("RiskClassId");
+
+                    b.HasIndex("RiskReportId");
+
+                    b.ToTable("RiskItem");
+                });
+
+            modelBuilder.Entity("WebApplication8.Models.RiskReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RiskReport");
+                });
+
+            modelBuilder.Entity("WebApplication8.Models.RRRI", b =>
+                {
+                    b.Property<int>("RiskReportId");
+
+                    b.Property<int>("RiskItemId");
+
+                    b.HasKey("RiskReportId", "RiskItemId");
+
+                    b.HasIndex("RiskItemId");
+
+                    b.HasIndex("RiskReportId");
+
+                    b.ToTable("RRRI");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole")
@@ -244,6 +333,36 @@ namespace WebApplication8.Migrations
                     b.HasOne("WebApplication8.Models.Blog")
                         .WithMany()
                         .HasForeignKey("BlogId");
+                });
+
+            modelBuilder.Entity("WebApplication8.Models.RiskItem", b =>
+                {
+                    b.HasOne("WebApplication8.Models.RiskCategory")
+                        .WithMany()
+                        .HasForeignKey("RiskCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WebApplication8.Models.RiskClass")
+                        .WithMany()
+                        .HasForeignKey("RiskClassId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WebApplication8.Models.RiskReport")
+                        .WithMany()
+                        .HasForeignKey("RiskReportId");
+                });
+
+            modelBuilder.Entity("WebApplication8.Models.RRRI", b =>
+                {
+                    b.HasOne("WebApplication8.Models.RiskItem")
+                        .WithMany()
+                        .HasForeignKey("RiskItemId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WebApplication8.Models.RiskReport")
+                        .WithMany()
+                        .HasForeignKey("RiskReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
         }
     }

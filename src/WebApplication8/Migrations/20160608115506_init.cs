@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace WebApplication8.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -46,6 +46,7 @@ namespace WebApplication8.Migrations
                     ConcurrencyStamp = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
                     EmailConfirmed = table.Column<bool>(nullable: false),
+                    FullName = table.Column<string>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     NormalizedEmail = table.Column<string>(nullable: true),
@@ -73,6 +74,47 @@ namespace WebApplication8.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Blog", x => x.BlogId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RiskCategory",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CategoryName = table.Column<string>(nullable: false),
+                    Ordinal = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RiskCategory", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RiskClass",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Classification = table.Column<string>(nullable: true),
+                    Ordinal = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RiskClass", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RiskReport",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Title = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RiskReport", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -182,6 +224,65 @@ namespace WebApplication8.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RiskItem",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Description = table.Column<string>(nullable: false),
+                    RiskCategoryId = table.Column<int>(nullable: false),
+                    RiskClassId = table.Column<int>(nullable: false),
+                    RiskReportId = table.Column<int>(nullable: true),
+                    Score = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RiskItem", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RiskItem_RiskCategory_RiskCategoryId",
+                        column: x => x.RiskCategoryId,
+                        principalTable: "RiskCategory",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RiskItem_RiskClass_RiskClassId",
+                        column: x => x.RiskClassId,
+                        principalTable: "RiskClass",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RiskItem_RiskReport_RiskReportId",
+                        column: x => x.RiskReportId,
+                        principalTable: "RiskReport",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RRRI",
+                columns: table => new
+                {
+                    RiskReportId = table.Column<int>(nullable: false),
+                    RiskItemId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RRRI", x => new { x.RiskReportId, x.RiskItemId });
+                    table.ForeignKey(
+                        name: "FK_RRRI_RiskItem_RiskItemId",
+                        column: x => x.RiskItemId,
+                        principalTable: "RiskItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RRRI_RiskReport_RiskReportId",
+                        column: x => x.RiskReportId,
+                        principalTable: "RiskReport",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
@@ -226,6 +327,31 @@ namespace WebApplication8.Migrations
                 name: "IX_Post_BlogId",
                 table: "Post",
                 column: "BlogId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RiskItem_RiskCategoryId",
+                table: "RiskItem",
+                column: "RiskCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RiskItem_RiskClassId",
+                table: "RiskItem",
+                column: "RiskClassId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RiskItem_RiskReportId",
+                table: "RiskItem",
+                column: "RiskReportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RRRI_RiskItemId",
+                table: "RRRI",
+                column: "RiskItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RRRI_RiskReportId",
+                table: "RRRI",
+                column: "RiskReportId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -249,6 +375,9 @@ namespace WebApplication8.Migrations
                 name: "Post");
 
             migrationBuilder.DropTable(
+                name: "RRRI");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -256,6 +385,18 @@ namespace WebApplication8.Migrations
 
             migrationBuilder.DropTable(
                 name: "Blog");
+
+            migrationBuilder.DropTable(
+                name: "RiskItem");
+
+            migrationBuilder.DropTable(
+                name: "RiskCategory");
+
+            migrationBuilder.DropTable(
+                name: "RiskClass");
+
+            migrationBuilder.DropTable(
+                name: "RiskReport");
         }
     }
 }

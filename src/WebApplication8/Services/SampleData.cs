@@ -46,6 +46,16 @@ namespace WebApplication8.Services
                     await db.SaveChangesAsync();
                 }
 
+                if (!db.RiskReport.Any())
+                {
+                    var rr = new RiskReport { Title = "Standard Risk Report" };
+                    foreach (var r in _riskItems)
+                    {
+                        rr.AddRiskItem(r);
+                    }
+                    await db.SaveChangesAsync();
+                }
+
             }
             await Task.FromResult(0);
         }
@@ -97,7 +107,10 @@ namespace WebApplication8.Services
         {
             new RiskItem { Description="Risk Item 1", RiskCategoryId=1, RiskClassId=1, Score=10 },
             new RiskItem { Description="Risk Item 2", RiskCategoryId=2, RiskClassId=2, Score=20 },
-            new RiskItem { Description="Risk Item 3", RiskCategoryId=3, RiskClassId=3, Score=30 }
+            new RiskItem { Description="Risk Item 3", RiskCategoryId=3, RiskClassId=3, Score=30 },
+            new RiskItem { Description="Risk Item 4", RiskCategoryId=3, RiskClassId=3, Score=30 },
+            new RiskItem { Description="Risk Item 5", RiskCategoryId=3, RiskClassId=3, Score=30 },
+            new RiskItem { Description="Risk Item 5", RiskCategoryId=3, RiskClassId=3, Score=30 }
         };
 
     }
