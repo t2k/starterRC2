@@ -86,7 +86,7 @@ namespace WebApplication8
             });
 
 
-            SampleData.InitializeDatabaseAsync(app.ApplicationServices).Wait();
+           SampleData.InitializeDatabaseAsync(app.ApplicationServices).Wait();
         }
     }
 }

@@ -25,27 +25,18 @@ namespace WebApplication8.Data
         {
             base.OnModelCreating(modelBuilder);
 
-
             modelBuilder.Entity<RRRI>()
                  .HasKey(t => new { t.RiskReportId, t.RiskItemId });
 
             modelBuilder.Entity<RRRI>()
-                .HasOne(pt => pt.RiskReport)
-                .WithMany(p => p.RRRIs)
-                .HasForeignKey(pt => pt.RiskReportId);
+                .HasOne(rr => rr.RiskReport)
+                .WithMany(ri => ri.RRRIs)
+                .HasForeignKey(rr => rr.RiskReportId);
 
             modelBuilder.Entity<RRRI>()
-                .HasOne(pt => pt.RiskItem)
-                .WithMany(t => t.RRRIs)
-                .HasForeignKey(r=>r.RiskItemId);
-
-            // temp testing relations
-            /*
-            builder.Entity<Post>()
-                .HasOne(p => p.Blog)
-                .WithMany(b => b.Posts);
-            */
-            // Customize the ASP.NET Identity model and override the defaults if needed.
+                .HasOne(ri => ri.RiskItem)
+                .WithMany(rr => rr.RRRIs)
+                .HasForeignKey(ri=>ri.RiskItemId);            // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }

@@ -1,39 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace WebApplication8.Models
 {
     public partial class RiskReport
     {
         public int Id { get; set; }
+
         [Required]
         public string Title { get; set; }
 
-        public List<RRRI> RRRIs { get; set; }
-
+        /*
         /// <summary>
-        /// helper method Add riskitem to this report (for join table)
+        /// helper: get RiskItems
         /// </summary>
-        /// <param name="ri"></param>
-        public void AddRiskItem( RiskItem ri)
-        {
-            RRRI rrri = new RRRI { RiskReportId = this.Id, RiskItemId = ri.Id };
-            RRRIs.Add(rrri);
-        }
-
-        /// <summary>
-        /// get risk items related to this report
-        /// </summary>
-        public List<RiskItem> RiskItems
+        public IList<RiskItem> RiskItems
         {
             get
             {
-                return RRRIs.Select(i => i.RiskItem).ToList();
+                return RRRIs.Select(r => r.RiskItem).ToList();
             }
         }
+
+        /// <summary>
+        /// helper: Add RiskItem
+        /// </summary>
+        /// <param name="ri"></param>
+        public void AddRiskItem(RiskItem ri)
+        {
+            RRRIs.Add(new RRRI { RiskReport = this, RiskItem = ri });
+        }
+        */
+
+        [NotMapped]
+        public virtual IList<RRRI> RRRIs { get; set; } = new List<RRRI>();
     }
 
     public partial class RiskItem
@@ -42,43 +44,58 @@ namespace WebApplication8.Models
       
         [Required MaxLength(128)]
         public string Description { get; set; }
+
         [Required]
         public int Score { get; set; }
 
-        [Display(Name ="Category")]
+
+        [ForeignKey("RiskCategoryId") Display(Name = "Category")]
         public int RiskCategoryId { get; set; }
-        public RiskCategory RiskCategory { get; set; }
+        public virtual RiskCategory RiskCategory { get; set; }
 
-        [Display(Name = "Class")]
+        [ForeignKey("RiskClassId") Display(Name = "Class")]
         public int RiskClassId { get; set; }
-        public RiskClass RiskClass { get; set; }
+        public virtual RiskClass RiskClass { get; set; }
 
-        public List<RRRI> RRRIs { get; set; }
+        [NotMapped]
+        public virtual IList<RRRI> RRRIs { get; set; } = new List<RRRI>();
 
     }
 
 
     public partial class RiskClass
     {
+        public RiskClass()
+        {
+            RiskItems = new List<RiskItem>();
+        }
         public int Id { get; set; }
         [Display(Name = "Risk Classification")]
         public string Classification { get; set; }
         [Required MaxLength(128) Display(Name = "Sort Order")]
         public int Ordinal { get; set; }
-        public virtual List<RiskItem> RiskItems { get; set; }
+
+        [NotMapped]
+        public virtual IList<RiskItem> RiskItems { get; set; } // = new List<RiskItem>();
     }
 
 
     public partial class RiskCategory
     {
+        public RiskCategory()
+        {
+            RiskItems = new List<RiskItem>();
+        }
+
         public int Id { get; set; }
         [Required MaxLength(128) Display(Name ="Risk Category")]
         public string CategoryName { get; set; }
         [Display(Name ="Sort Order")]
         [Required]
         public int Ordinal { get; set; }
-        public virtual List<RiskItem> RiskItems { get; set; }
 
+        [NotMapped]
+        public virtual IList<RiskItem> RiskItems { get; set; } // = new List<RiskItem>();
     }
 
     /// <summary>
@@ -87,10 +104,9 @@ namespace WebApplication8.Models
     public partial class RRRI
     {
         public int RiskReportId { get; set; }
-        public RiskReport RiskReport { get; set; }
-
         public int RiskItemId { get; set; }
-        public RiskItem RiskItem { get; set; }
 
+        public virtual RiskReport RiskReport { get; set; }
+        public virtual RiskItem RiskItem { get; set; }
     }
 }

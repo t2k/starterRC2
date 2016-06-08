@@ -1,0 +1,68 @@
+@model WebApplication8.Models.RiskReportViewModels.DetailsViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>RiskReport</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Report.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Report.Title)
+        </dd>
+    </dl>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Item#
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Class
+            </th>
+            <th>
+                Category
+            </th>
+            <th>
+                Score
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model._RiskItems)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RiskClass.Classification)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RiskCategory.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Score)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Report.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

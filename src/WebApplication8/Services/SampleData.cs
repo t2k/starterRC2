@@ -25,37 +25,56 @@ namespace WebApplication8.Services
                 if (!db.Blog.Any())
                 {
                     db.Blog.AddRange(_blogs);
-                    await db.SaveChangesAsync();
+                    db.SaveChangesAsync().Wait();
                 }
 
                 if (!db.RiskClass.Any())
                 {
                     db.RiskClass.AddRange(_riskClasses);
-                    await db.SaveChangesAsync();
+                    db.SaveChangesAsync().Wait();
                 }
 
                 if (!db.RiskCategory.Any())
                 {
                     db.RiskCategory.AddRange(_riskCategories);
-                    await db.SaveChangesAsync();
+                    db.SaveChangesAsync().Wait();
                 }
 
                 if (!db.RiskItem.Any())
                 {
                     db.RiskItem.AddRange(_riskItems);
-                    await db.SaveChangesAsync();
+                    db.SaveChangesAsync().Wait();
                 }
 
                 if (!db.RiskReport.Any())
                 {
-                    var rr = new RiskReport { Title = "Standard Risk Report" };
-                    foreach (var r in _riskItems)
+                    RiskReport report = new RiskReport()
                     {
-                        rr.AddRiskItem(r);
-                    }
-                    await db.SaveChangesAsync();
-                }
+                        Title = "DZ Bank New York: Standard Risk Rating",
+                    };
+                    RiskReport report2 = new RiskReport()
+                    {
+                        Title = "DZ Bank New York: FI Risk Rating",
+                    };
 
+                    db.RiskReport.Add(report);
+                    db.RiskReport.Add(report2);
+
+                    var items = db.RiskItem.ToList();
+
+                    foreach (var i in items)
+                    {
+                        if (i.Id < 7)
+                        {
+                            report.RRRIs.Add(new RRRI { RiskReportId = report.Id, RiskItemId = i.Id });
+                        }
+                        if (i.Id > 6)
+                        {
+                            report2.RRRIs.Add(new RRRI { RiskReportId = report2.Id, RiskItemId = i.Id });
+                        }
+                    }
+                    db.SaveChangesAsync().Wait();
+                }
             }
             await Task.FromResult(0);
         }
@@ -100,17 +119,26 @@ namespace WebApplication8.Services
         {
             new RiskCategory { CategoryName="Cat#1", Ordinal=1 },
             new RiskCategory { CategoryName="Cat#2", Ordinal=2 },
-            new RiskCategory { CategoryName="Cat#3", Ordinal=3 }
+            new RiskCategory { CategoryName="Cat#3", Ordinal=3 },
+            new RiskCategory { CategoryName="Cat#4", Ordinal=4 },
+            new RiskCategory { CategoryName="Cat#5", Ordinal=5 },
+            new RiskCategory { CategoryName="Cat#6", Ordinal=6 },
         };
 
         private static IList<RiskItem> _riskItems { get; } = new List<RiskItem>()
         {
-            new RiskItem { Description="Risk Item 1", RiskCategoryId=1, RiskClassId=1, Score=10 },
+            new RiskItem { Description="Risk Item 1", RiskCategoryId=1, RiskClassId=1, Score=40 },
             new RiskItem { Description="Risk Item 2", RiskCategoryId=2, RiskClassId=2, Score=20 },
-            new RiskItem { Description="Risk Item 3", RiskCategoryId=3, RiskClassId=3, Score=30 },
-            new RiskItem { Description="Risk Item 4", RiskCategoryId=3, RiskClassId=3, Score=30 },
-            new RiskItem { Description="Risk Item 5", RiskCategoryId=3, RiskClassId=3, Score=30 },
-            new RiskItem { Description="Risk Item 5", RiskCategoryId=3, RiskClassId=3, Score=30 }
+            new RiskItem { Description="Risk Item 3", RiskCategoryId=3, RiskClassId=3, Score=10 },
+            new RiskItem { Description="Risk Item 4", RiskCategoryId=3, RiskClassId=3, Score=10 },
+            new RiskItem { Description="Risk Item 5", RiskCategoryId=3, RiskClassId=3, Score=10 },
+            new RiskItem { Description="Risk Item 6", RiskCategoryId=3, RiskClassId=3, Score=10 },
+            new RiskItem { Description="Risk Item 7", RiskCategoryId=4, RiskClassId=3, Score=10 },
+            new RiskItem { Description="Risk Item 8", RiskCategoryId=4, RiskClassId=3, Score=12 },
+            new RiskItem { Description="Risk Item 9", RiskCategoryId=5, RiskClassId=3, Score=120 },
+            new RiskItem { Description="Risk Item 10", RiskCategoryId=5, RiskClassId=3, Score=12 },
+            new RiskItem { Description="Risk Item 11", RiskCategoryId=6, RiskClassId=3, Score=12 },
+            new RiskItem { Description="Risk Item 12", RiskCategoryId=6, RiskClassId=3, Score=12 }
         };
 
     }
