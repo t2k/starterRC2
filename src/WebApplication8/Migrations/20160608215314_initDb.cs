@@ -233,7 +233,6 @@ namespace WebApplication8.Migrations
                     Description = table.Column<string>(nullable: false),
                     RiskCategoryId = table.Column<int>(nullable: false),
                     RiskClassId = table.Column<int>(nullable: false),
-                    RiskReportId = table.Column<int>(nullable: true),
                     Score = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -251,12 +250,6 @@ namespace WebApplication8.Migrations
                         principalTable: "RiskClass",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RiskItem_RiskReport_RiskReportId",
-                        column: x => x.RiskReportId,
-                        principalTable: "RiskReport",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -339,11 +332,6 @@ namespace WebApplication8.Migrations
                 column: "RiskClassId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RiskItem_RiskReportId",
-                table: "RiskItem",
-                column: "RiskReportId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RRRI_RiskItemId",
                 table: "RRRI",
                 column: "RiskItemId");
@@ -390,13 +378,13 @@ namespace WebApplication8.Migrations
                 name: "RiskItem");
 
             migrationBuilder.DropTable(
+                name: "RiskReport");
+
+            migrationBuilder.DropTable(
                 name: "RiskCategory");
 
             migrationBuilder.DropTable(
                 name: "RiskClass");
-
-            migrationBuilder.DropTable(
-                name: "RiskReport");
         }
     }
 }

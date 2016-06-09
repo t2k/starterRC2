@@ -8,7 +8,7 @@ using WebApplication8.Data;
 namespace WebApplication8.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20160608152313_initDb")]
+    [Migration("20160608215314_initDb")]
     partial class initDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -248,8 +248,6 @@ namespace WebApplication8.Migrations
 
                     b.Property<int>("RiskClassId");
 
-                    b.Property<int?>("RiskReportId");
-
                     b.Property<int>("Score");
 
                     b.HasKey("Id");
@@ -257,8 +255,6 @@ namespace WebApplication8.Migrations
                     b.HasIndex("RiskCategoryId");
 
                     b.HasIndex("RiskClassId");
-
-                    b.HasIndex("RiskReportId");
 
                     b.ToTable("RiskItem");
                 });
@@ -346,10 +342,6 @@ namespace WebApplication8.Migrations
                         .WithMany()
                         .HasForeignKey("RiskClassId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("WebApplication8.Models.RiskReport")
-                        .WithMany()
-                        .HasForeignKey("RiskReportId");
                 });
 
             modelBuilder.Entity("WebApplication8.Models.RRRI", b =>

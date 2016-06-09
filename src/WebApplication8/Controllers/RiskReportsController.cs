@@ -30,15 +30,16 @@ namespace WebApplication8.Controllers
                 return NotFound();
             }
 
-            var report = _context.RiskReport.Include(r=>r.RRRIs).Single(m => m.Id == id);
+            var report = _context.RiskReport.Include(i=>i.RRRIs).Single(m => m.Id == id);
 
-            var items = _context.RRRI.Where(i=>i.RiskReportId==id).Select(i=>i.RiskItem).ToList();
+            var items = _context.RiskItem.Where(i => report.RiskItemIds.Contains(i.Id)).Include(k=>k.RiskCategory).Include(l=>l.RiskClass).ToList();
+            //var items = report.RiskItems.in context.RiskItem.Where(i => report.RRRIs.Select(j => j.RiskItemId).Contains(i.Id)).Include(k=>k.RiskCategory).Include(l=>l.RiskClass).ToList();
 
             DetailsViewModel vm = new DetailsViewModel
             {
                 Report = report,
                 _RiskItems = items
-        };
+            };
 
             return View(vm);
         }
