@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace WebApplication8.Models
 {
@@ -9,12 +8,12 @@ namespace WebApplication8.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required MaxLength(128)]
         public string Title { get; set; }
 
         
         /// <summary>
-        /// helper: get RiskItems
+        /// helper: get List<int> of RiskItem.Ids
         /// </summary>
         public IList<int> RiskItemIds
         {
@@ -32,10 +31,10 @@ namespace WebApplication8.Models
         {
             RRRIs.Add(new RRRI { RiskReport = this, RiskItem = ri });
         }
-        
 
-        public virtual IList<RRRI> RRRIs { get; set; } = new List<RRRI>();
+        public IList<RRRI> RRRIs { get; set; } = new List<RRRI>();
     }
+
 
     public partial class RiskItem
     {
@@ -49,12 +48,12 @@ namespace WebApplication8.Models
 
 
         public int RiskCategoryId { get; set; }
-        public virtual RiskCategory RiskCategory { get; set; }
+        public RiskCategory RiskCategory { get; set; }
 
         public int RiskClassId { get; set; }
-        public virtual RiskClass RiskClass { get; set; }
+        public RiskClass RiskClass { get; set; }
 
-        public virtual ICollection<RRRI> RRRIs { get; set; } = new List<RRRI>();
+        public IList<RRRI> RRRIs { get; set; } = new List<RRRI>();
 
     }
 
@@ -62,26 +61,28 @@ namespace WebApplication8.Models
     public partial class RiskClass
     {
         public int Id { get; set; }
-        [Display(Name = "Risk Classification")]
+
+        [Display(Name = "Risk Classification") MaxLength(128)]
         public string Classification { get; set; }
-        [Required MaxLength(128) Display(Name = "Sort Order")]
+
+        [Display(Name = "Sort Order") Required]
         public int Ordinal { get; set; }
 
-        public virtual ICollection<RiskItem> RiskItems { get; set; }  = new List<RiskItem>();
+        public IList<RiskItem> RiskItems { get; set; }  = new List<RiskItem>();
     }
 
 
     public partial class RiskCategory
     {
-
         public int Id { get; set; }
-        [Required MaxLength(128) Display(Name ="Risk Category")]
+
+        [Display(Name ="Risk Category") Required MaxLength(128)]
         public string CategoryName { get; set; }
-        [Display(Name ="Sort Order")]
-        [Required]
+
+        [Display(Name ="Sort Order") Required]
         public int Ordinal { get; set; }
 
-        public virtual ICollection<RiskItem> RiskItems { get; set; } = new List<RiskItem>();
+        public IList<RiskItem> RiskItems { get; set; } = new List<RiskItem>();
     }
 
     /// <summary>
@@ -92,7 +93,7 @@ namespace WebApplication8.Models
         public int RiskReportId { get; set; }
         public int RiskItemId { get; set; }
 
-        public virtual RiskReport RiskReport { get; set; }
-        public virtual RiskItem RiskItem { get; set; }
+        public RiskReport RiskReport { get; set; }
+        public RiskItem RiskItem { get; set; }
     }
 }

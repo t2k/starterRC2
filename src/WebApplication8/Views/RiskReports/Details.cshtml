@@ -22,24 +22,24 @@
     <thead>
         <tr>
             <th>
-                Item#
+                @Html.DisplayNameFor(model => model.RiskItems[0].Id)
             </th>
             <th>
-                Description
+                @Html.DisplayNameFor(model => model.RiskItems[0].Description)
             </th>
             <th>
-                Class
+                @Html.DisplayNameFor(model => model.RiskItems[0].RiskClass.Classification)
             </th>
             <th>
-                Category
+                @Html.DisplayNameFor(model => model.RiskItems[0].RiskCategory.CategoryName)
             </th>
             <th>
-                Score
+                @Html.DisplayNameFor(model => model.RiskItems[0].Score)
             </th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model._RiskItems)
+        @foreach (var item in Model.RiskItems)
         {
             <tr>
                 <td>

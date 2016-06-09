@@ -11,7 +11,7 @@ namespace WebApplication8.Models.RiskReportViewModels
     public class DetailsViewModel
     {
         public RiskReport Report { get; set; }
-        public List<RiskItem> _RiskItems { get; set; }
+        public List<RiskItem> RiskItems { get; set; }
     }
 
 }

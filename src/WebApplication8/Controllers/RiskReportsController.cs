@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication8.Data;
 using WebApplication8.Models;
 using WebApplication8.Models.RiskReportViewModels;
+
 namespace WebApplication8.Controllers
 {
     public class RiskReportsController : Controller
@@ -23,22 +24,19 @@ namespace WebApplication8.Controllers
         }
 
         // GET: RiskReports/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var report = _context.RiskReport.Include(i=>i.RRRIs).Single(m => m.Id == id);
-
-            var items = _context.RiskItem.Where(i => report.RiskItemIds.Contains(i.Id)).Include(k=>k.RiskCategory).Include(l=>l.RiskClass).ToList();
-            //var items = report.RiskItems.in context.RiskItem.Where(i => report.RRRIs.Select(j => j.RiskItemId).Contains(i.Id)).Include(k=>k.RiskCategory).Include(l=>l.RiskClass).ToList();
+            var report = await _context.RiskReport.Include(i => i.RRRIs).SingleOrDefaultAsync(m => m.Id == id);
 
             DetailsViewModel vm = new DetailsViewModel
             {
                 Report = report,
-                _RiskItems = items
+                RiskItems = await _context.RiskItem.Where(i => report.RiskItemIds.Contains(i.Id)).Include(k => k.RiskCategory).Include(l => l.RiskClass).ToListAsync()
             };
 
             return View(vm);

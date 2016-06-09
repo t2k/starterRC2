@@ -66,11 +66,11 @@ namespace WebApplication8.Services
                     {
                         if (i.Id < 7)
                         {
-                            report.RRRIs.Add(new RRRI { RiskReportId = report.Id, RiskItemId = i.Id });
+                            report.AddRiskItem(i);  // RRRIs.Add(new RRRI { RiskReportId = report.Id, RiskItemId = i.Id });
                         }
                         if (i.Id > 6)
                         {
-                            report2.RRRIs.Add(new RRRI { RiskReportId = report2.Id, RiskItemId = i.Id });
+                            report2.AddRiskItem(i); //.RRRIs.Add(new RRRI { RiskReportId = report2.Id, RiskItemId = i.Id });
                         }
                     }
                     db.SaveChangesAsync().Wait();

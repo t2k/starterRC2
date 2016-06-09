@@ -224,10 +224,10 @@ namespace WebApplication8.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Classification");
-
-                    b.Property<int>("Ordinal")
+                    b.Property<string>("Classification")
                         .HasAnnotation("MaxLength", 128);
+
+                    b.Property<int>("Ordinal");
 
                     b.HasKey("Id");
 
@@ -264,7 +264,8 @@ namespace WebApplication8.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Title")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 128);
 
                     b.HasKey("Id");
 

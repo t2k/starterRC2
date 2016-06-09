@@ -8,7 +8,7 @@ using WebApplication8.Data;
 namespace WebApplication8.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20160608215314_initDb")]
+    [Migration("20160609142004_initDb")]
     partial class initDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -225,10 +225,10 @@ namespace WebApplication8.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Classification");
-
-                    b.Property<int>("Ordinal")
+                    b.Property<string>("Classification")
                         .HasAnnotation("MaxLength", 128);
+
+                    b.Property<int>("Ordinal");
 
                     b.HasKey("Id");
 
@@ -265,7 +265,8 @@ namespace WebApplication8.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Title")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 128);
 
                     b.HasKey("Id");
 
